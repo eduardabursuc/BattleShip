@@ -1,6 +1,8 @@
 package org.example.model;
 
-public class Ship {
+import java.io.Serializable;
+
+public class Ship implements Serializable {
     private int size;
     private int orientation; // 1- horizontal, 2- vertical
 

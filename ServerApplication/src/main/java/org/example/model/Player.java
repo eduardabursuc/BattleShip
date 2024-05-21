@@ -1,24 +1,52 @@
 package org.example.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.io.Serializable;
 
-public class Player {
-    private String name;
-    private Board board;
+@Entity
+@Table(name = "players")
+public class Player implements Serializable {
 
-    public long startTime;
+    @Id
+    @Column(name = "username")
+    private String username;
 
-    public PrintWriter out;
+    @Column(name = "password")
+    private String password;
 
-    public Player(String name, PrintWriter out) {
-        this.name = name;
+    @Column(name = "wins")
+    private Integer wins;
+
+    private transient Board board;
+
+    public transient long startTime;
+
+    public transient PrintWriter out;
+
+    public Player(){
+
+    }
+
+    public Player(String username, PrintWriter out) {
+        this.username = username;
         this.board = new Board();
         this.out = out;
     }
 
-    public String getName() {
-        return name;
+    public Player(String username, String password, Integer wins){
+        this.username = username;
+        this.password = password;
+        this.wins = wins;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public Board getBoard() {
@@ -37,6 +65,14 @@ public class Player {
         return board.tryHitShip(number, letter);
     }
 
+    @Override
+    public String toString() {
+        return "Player{" +
+                "username='" + username + "; " +
+                "password='" + password + "; " +
+                "wins='" + wins  +
+                '}';
+    }
 
     // Add methods related to player actions, such as placing ships and making moves.
 }

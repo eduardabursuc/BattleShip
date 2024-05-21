@@ -1,10 +1,11 @@
 package org.example.model;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import static java.lang.Math.abs;
 
-public class Board {
+public class Board implements Serializable {
     private char[][] grid;
     private Ship[] ships = {new Ship(2), new Ship(3), new Ship(3), new Ship(4), new Ship(5)};
 
