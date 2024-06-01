@@ -1,8 +1,6 @@
 package org.example;
 
 import org.example.model.Game;
-import org.example.model.Player;
-import org.example.repository.PlayerRepository;
 
 import java.io.*;
 import java.net.*;
@@ -55,7 +53,8 @@ public class GameServer {
                     out.println("Game created with ID: " + gameId);
                     out.println("Waiting for second player to join...");
                     break;
-                } else if (request.startsWith("join game ")) {
+                }
+                else if (request.startsWith("join game ")) {
                     String gameId = request.substring(10).trim();
                     if (games.containsKey(gameId)) {
                         LinkedBlockingQueue<Socket> queue = games.get(gameId);

@@ -148,5 +148,9 @@ public class Board implements Serializable {
         return true;
     }
 
-    // Add methods for placing ships, recording hits/misses, etc.
+    public Ship[] getShips(){
+        return ships;
+    }
+
+    
 }
