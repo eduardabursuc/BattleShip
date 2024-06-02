@@ -65,12 +65,44 @@ public class Player implements Serializable {
         return board.tryHitShip(number, letter);
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Integer getWins() {
+        return wins;
+    }
+
+    public void setWins(Integer wins) {
+        this.wins = wins;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
+    public PrintWriter getOut() {
+        return out;
+    }
+
+    public void setOut(PrintWriter out) {
+        this.out = out;
+    }
+
     @Override
     public String toString() {
         return "Player{" +
-                "username='" + username + "; " +
-                "password='" + password + "; " +
-                "wins='" + wins  +
+                "username='" + username + "'; " +
+                "password='" + password + "'; " +
+                "wins=" + wins  +
                 '}';
     }
 

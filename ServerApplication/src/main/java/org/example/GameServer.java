@@ -108,7 +108,7 @@ public class GameServer {
     }
 
     public static void main(String[] args) {
-
+        
         int port = 9999;
         GameServer server = new GameServer(port);
         server.startServer();
