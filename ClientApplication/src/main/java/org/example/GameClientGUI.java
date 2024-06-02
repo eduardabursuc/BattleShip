@@ -245,26 +245,6 @@ public class GameClientGUI extends JFrame {
             } else {
                 ((Timer) e.getSource()).stop();
                 client.sendMessage("timeup");
-//                SwingUtilities.invokeLater(() -> {
-//                    JFrame frame = new JFrame();
-//                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                    int result = JOptionPane.showOptionDialog(
-//                            frame,
-//                            "Time's up!",
-//                            "Time Up",
-//                            JOptionPane.DEFAULT_OPTION,
-//                            JOptionPane.INFORMATION_MESSAGE,
-//                            null,
-//                            new Object[]{"OK"},
-//                            "OK"
-//                    );
-//                    if (result == JOptionPane.OK_OPTION) {
-//                        System.exit(0);
-//                    } else {
-//                        client.sendMessage("timeup");
-//                        System.exit(0);
-//                    }
-//                });
             }
         });
         timer.start();
