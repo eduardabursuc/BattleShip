@@ -52,68 +52,14 @@ public class GameClientGUI extends JFrame {
             }
         }
     }
-
-//    private void initUI() {
-//        setTitle("Game Client");
-//        setSize(300, 250);
-//        setDefaultCloseOperation(EXIT_ON_CLOSE);
-//        setLocationRelativeTo(null);
-//
-//        JPanel panel = new JPanel();
-//        panel.setLayout(new GridLayout(2, 1));
-//
-//        JButton createGameButton = new JButton("Create Game");
-//        createGameButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                client.sendMessage("create game");
-//            }
-//        });
-//
-//        JButton joinGameButton = new JButton("Join Game");
-//        joinGameButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                String gameId = JOptionPane.showInputDialog(GameClientGUI.this, "Enter game code:");
-//                if (gameId != null && !gameId.trim().isEmpty()) {
-//                    client.sendMessage("join game " + gameId.trim());
-//                }
-//            }
-//        });
-//
-//        panel.add(createGameButton);
-//        panel.add(joinGameButton);
-//
-//        add(panel);
-//    }
-
     private void initUI() {
         setTitle("Game Client");
-        setSize(300, 250); // Increase the height to fit the new buttons
+        setSize(300, 200);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 1)); // Change to 4 rows
-
-        JButton createGameButton = new JButton("Create Game");
-        createGameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                client.sendMessage("create game");
-            }
-        });
-
-        JButton joinGameButton = new JButton("Join Game");
-        joinGameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String gameId = JOptionPane.showInputDialog(GameClientGUI.this, "Enter game code:");
-                if (gameId != null && !gameId.trim().isEmpty()) {
-                    client.sendMessage("join game " + gameId.trim());
-                }
-            }
-        });
+        panel.setLayout(new GridLayout(2, 1)); // Change to 2 rows
 
         JButton registerButton = new JButton("Register");
         registerButton.addActionListener(new ActionListener() {
@@ -163,13 +109,60 @@ public class GameClientGUI extends JFrame {
             }
         });
 
-        panel.add(createGameButton);
-        panel.add(joinGameButton);
         panel.add(registerButton);
         panel.add(loginButton);
 
         add(panel);
     }
+
+    public void switchToGameButtons() {
+        JPanel panel = (JPanel) getContentPane().getComponent(0);
+        panel.removeAll();
+
+        JButton createGameButton = new JButton("Create Game");
+        createGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                client.sendMessage("create game");
+            }
+        });
+
+        JButton joinGameButton = new JButton("Join Game");
+        joinGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String gameId = JOptionPane.showInputDialog(GameClientGUI.this, "Enter game code:");
+                if (gameId != null && !gameId.trim().isEmpty()) {
+                    client.sendMessage("join game " + gameId.trim());
+                }
+            }
+        });
+
+        JButton playVsAIButton = new JButton("Play vs AI");
+        playVsAIButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                client.sendMessage("play with AI");
+            }
+        });
+
+        JButton ratingButton = new JButton("Rating");
+        ratingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                client.sendMessage("rating");
+            }
+        });
+
+        panel.add(createGameButton);
+        panel.add(joinGameButton);
+        panel.add(playVsAIButton);
+        panel.add(ratingButton);
+
+        panel.revalidate();
+        panel.repaint();
+    }
+
 
     public void updateOpponentAttack(String[] boardState) {
         for (int i = 1; i < boardState.length; i++) {
@@ -181,7 +174,7 @@ public class GameClientGUI extends JFrame {
         secondDrawingPanel.repaint();
     }
 
-    public void showGameCreatedPopup(String gameCode) {
+    public void showGameCreatedPopup() {
         dispose();
 
         JFrame canvasFrame = new JFrame("Game");
@@ -251,27 +244,7 @@ public class GameClientGUI extends JFrame {
                 timerLabel.setText("Time left: " + timeLeft);
             } else {
                 ((Timer) e.getSource()).stop();
-                SwingUtilities.invokeLater(() -> {
-                    JFrame frame = new JFrame();
-                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    int result = JOptionPane.showOptionDialog(
-                            frame,
-                            "Time's up!",
-                            "Time Up",
-                            JOptionPane.DEFAULT_OPTION,
-                            JOptionPane.INFORMATION_MESSAGE,
-                            null,
-                            new Object[]{"OK"},
-                            "OK"
-                    );
-                    if (result == JOptionPane.OK_OPTION) {
-                        client.sendMessage("timeup");
-                        System.exit(0);
-                    } else {
-                        client.sendMessage("timeup");
-                        System.exit(0);
-                    }
-                });
+                client.sendMessage("timeup");
             }
         });
         timer.start();

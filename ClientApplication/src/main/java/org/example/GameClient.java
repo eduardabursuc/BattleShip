@@ -88,15 +88,19 @@ public class GameClient {
                     if (response.equals("Invalid game ID.")) {
                         SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, "Invalid game ID.", "Error", JOptionPane.ERROR_MESSAGE));
                     }
+                    if(response.startsWith("Starting game against AI...")) {
+                        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, "Starting game against AI...", "Game against AI", JOptionPane.INFORMATION_MESSAGE));
+                        gui.showGameCreatedPopup();
+                    }
                     if (response.startsWith("Game created with ID:")) {
                         String finalResponse = response;
                         SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, finalResponse + "\n Waiting for the other player to join.", "Game Created", JOptionPane.INFORMATION_MESSAGE));
-                        gui.showGameCreatedPopup(response.split(":")[1].trim());
+                        gui.showGameCreatedPopup();
                     }
                     if (response.startsWith("Joined game with ID:")) {
                         String finalResponse = response;
                         SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, finalResponse, "Game Joined", JOptionPane.INFORMATION_MESSAGE));
-                        gui.showGameCreatedPopup(response.split(":")[1].trim());
+                        gui.showGameCreatedPopup();
                     }
                     if (response.startsWith("Create")) {
                         SwingUtilities.invokeLater(() -> gui.createSouthPanel(gui.southPanel, true));
@@ -267,8 +271,15 @@ public class GameClient {
                         String finalResponse = response;
                         SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, finalResponse, "Login Failed", JOptionPane.ERROR_MESSAGE));
                     }
-//                    if(response.startsWith("Login successful.")) {
-//                    }
+                    if(response.startsWith("Login successful.")) {
+                        String finalResponse = response;
+                        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, finalResponse, "Login Successful", JOptionPane.INFORMATION_MESSAGE));
+                        gui.switchToGameButtons();
+                    }
+                    if(response.startsWith("rating")) {
+                        String finalResponse = response;
+                        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, finalResponse, "Rating", JOptionPane.INFORMATION_MESSAGE));
+                    }
                 }
             } catch (IOException e) {
                 if (running.get()) {
