@@ -69,6 +69,7 @@ public class GameClient {
         sendMessage("submit move " + move);
     }
 
+    boolean opponentAttacked = false;
     private class ServerResponseHandler implements Runnable {
         private Socket socket;
         private AtomicBoolean running;
@@ -232,6 +233,20 @@ public class GameClient {
                                 System.exit(0);
                             }
                         });
+                    }
+                    if (response.startsWith("  A B C D E F G H I J")) {
+                        if (opponentAttacked) {
+                            String[] boardState = new String[11];
+                            boardState[0] = response;
+                            for (int i = 1; i < 11; i++) {
+                                boardState[i] = serverReader.readLine();
+                            }
+                            SwingUtilities.invokeLater(() -> gui.updateOpponentAttack(boardState));
+                            opponentAttacked = false;
+                        }
+                    }
+                    if (response.startsWith("The opponent attacked your ships")) {
+                        opponentAttacked = true;
                     }
                 }
             } catch (IOException e) {
