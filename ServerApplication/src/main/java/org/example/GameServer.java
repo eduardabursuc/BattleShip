@@ -99,7 +99,7 @@ public class GameServer {
     private Player authenticateClient(BufferedReader in, PrintWriter out) throws IOException {
         while (true) {
             out.println("Enter 'login' or 'register':");
-            String request = in.readLine();
+            String request;
 
             while ((request = in.readLine()) != null) {
                 String[] tokens = request.split(" ");
@@ -116,7 +116,7 @@ public class GameServer {
                     Player player = playerRepository.loginPlayer(username, password);
                     if (player != null) {
                         out.println("Login successful.");
-                        break;
+                        return player;
                     } else {
                         out.println("Login failed. Try again.");
                     }
@@ -124,6 +124,7 @@ public class GameServer {
                     boolean success = playerRepository.registerPlayer(username, password);
                     if (success) {
                         out.println("Registration successful. You can now login.");
+                        return playerRepository.loginPlayer(username, password);
                     } else {
                         out.println("Registration failed. Try again with a different username.");
                     }
