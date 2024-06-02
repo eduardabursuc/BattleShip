@@ -16,13 +16,13 @@ public class ClientThread extends Thread {
     private boolean isPlayer1;
     private PrintWriter out;
     private BufferedReader in;
-    private TimerThread timer;
+    //private TimerThread timer;
 
     public ClientThread(Socket socket, Game game, boolean isPlayer1) {
         this.socket = socket;
         this.game = game;
         this.isPlayer1 = isPlayer1;
-        this.timer = new TimerThread(game);
+        //this.timer = new TimerThread(game);
     }
 
     public void run() {
@@ -51,7 +51,7 @@ public class ClientThread extends Thread {
             }
 
 
-            timer.startTimer();
+            //timer.startTimer();
 
             String request;
             while ((request = in.readLine()) != null) {
@@ -67,14 +67,13 @@ public class ClientThread extends Thread {
                     if (game.getPlayer1().getBoard().isSetUp() && game.getPlayer2Board().isSetUp()) {
                         if (game.isPlayer1Turn() && isPlayer1) {
                             if (handleTurn(request, game.getPlayer1(), game.getPlayer2())) {
-                                game.getPlayer2().startTime = System.currentTimeMillis();
                                 game.toggleTurn();
                             }
                         } else if (!game.isPlayer1Turn() && !isPlayer1) {
-                            if (handleTurn(request, game.getPlayer2(), game.getPlayer1())) {
-                                game.getPlayer1().startTime = System.currentTimeMillis();
-                                game.toggleTurn();
-                            }
+                            if(!game.withAI)
+                                if (handleTurn(request, game.getPlayer2(), game.getPlayer1())) {
+                                    game.toggleTurn();
+                                }
                         } else {
                             out.println("It's not your turn.");
                         }
@@ -102,31 +101,19 @@ public class ClientThread extends Thread {
 
     private boolean handleTurn(String request, Player currentPlayer, Player opponent) {
 
-        if (game.isOver) {
-            game.getPlayer1().out.println("The game is over. " + (game.getWinner() == game.getPlayer1() ? "You won!" : "You lost."));
-            game.getPlayer2().out.println("The game is over. " + (game.getWinner() == game.getPlayer2() ? "You won!" : "You lost."));
-            return false;
-        }
-
-        timer.restartTimer();
-
 
         if (request.startsWith("submit move ")) {
             handleTryCommand(request, currentPlayer, opponent);
-            if(!game.isOver)
-                if(currentPlayer == game.getPlayer2())
-                    game.getPlayer1().out.println("Your turn: ");
-                else game.getPlayer2().out.println("Your turn: ");
-            return true;
         } else {
             out.println("Unidentified command.");
-            return false;
         }
 
+        return true;
 
     }
 
     private void handleTryCommand(String request, Player currentPlayer, Player opponent) {
+
         String subString = request.substring(12); // Adjusted to match "submit move "
         int index = 0;
         while (index < subString.length() && Character.isDigit(subString.charAt(index))) {
@@ -135,7 +122,7 @@ public class ClientThread extends Thread {
         String number = subString.substring(0, index);
         String letter = subString.substring(index);
 
-        Board board;
+
         if( game.withAI )
             opponent.setBoard(game.getPlayer2Board());
 
@@ -143,6 +130,10 @@ public class ClientThread extends Thread {
         int hit = opponent.tryHit(Integer.parseInt(number), letter.charAt(0));
 
         switch (hit) {
+            case -1:
+                out.println("Already attacked ..");
+                opponent.out.println("The opponent missed your ships!");
+                break;
             case 0:
                 out.println("Oops ... missed the target");
                 opponent.out.println("The opponent missed your ships!");
@@ -160,7 +151,7 @@ public class ClientThread extends Thread {
                 break;
             case 2:
                 out.println("You attacked a ship!");
-                opponent.out.println("The opponent attacked your ships: ");
+                opponent.out.println("The opponent attacked your ship: ");
                 printBoard(opponent.out, opponent.getBoard().getBoard());
                 break;
         }

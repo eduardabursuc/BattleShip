@@ -2,9 +2,9 @@ package org.example;
 
 import org.example.model.Board;
 import org.example.model.Game;
-import org.example.model.Player;
 import org.example.model.Ship;
 
+import java.io.PrintWriter;
 import java.util.Random;
 
 class Coordinate {
@@ -15,26 +15,45 @@ class Coordinate {
         this.x = x;
         this.y = y;
     }
+
+    @Override
+    public String toString() {
+        return "Coordinate{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Coordinate that = (Coordinate) o;
+
+        if (x != that.x) return false;
+        return y == that.y;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = x;
+        result = 31 * result + (int) y;
+        return result;
+    }
 }
 
 public class AIThread extends Thread {
 
     public Board AIboard = new Board();
-    private int[][] opponentBoard;
-    private Coordinate lastAttacked = new Coordinate(0, 'Z');
+    private int[][] opponentBoard = new int[11][11];
+    private Coordinate firstAttacked;
+    private Coordinate lastAttacked;
     private int position = 0; // 0 - not set, 1 - vertical, 2 - horizontal
     private boolean inAttack = false; // true = there is a ship attacked, otherwise try randomly
     private Game game;
-    private boolean attacked = false;
     private static final int BOARD_SIZE = 10;
     private Random random = new Random();
-
-    public AIThread() {
-        for (int i = 1; i <= 10; i++) {
-            for (int j = 1; j <= 10; j++)
-                opponentBoard[i][j] = 0;
-        }
-    }
 
     public AIThread(Game game) {
         this.game = game;
@@ -42,6 +61,10 @@ public class AIThread extends Thread {
             for (int j = 1; j <= 10; j++)
                 opponentBoard[i][j] = 0;
         }
+    }
+
+    public void setGame(Game game){
+        this.game = game;
     }
 
     @Override
@@ -52,11 +75,19 @@ public class AIThread extends Thread {
             placeShipRandomly(ship);
         }
 
-        // Game logic
         while (!game.isOver) {
-            attack();
-        }
 
+            if (!game.isPlayer1Turn()) {
+                System.out.println("AI's turn to attack.");
+                attack();
+            } else {
+                try{
+                    sleep(20);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
 
     }
 
@@ -90,6 +121,7 @@ public class AIThread extends Thread {
 
     private void attack() {
         if (!inAttack) {
+            System.out.println(1);
             int x = random.nextInt(BOARD_SIZE) + 1;
             int y = random.nextInt(BOARD_SIZE) + 'A';
 
@@ -98,14 +130,19 @@ public class AIThread extends Thread {
                 y = random.nextInt(BOARD_SIZE) + 'A';
             }
 
+            System.out.println(new Coordinate(x, (char)(y)));
+
             if (game.getPlayer1().getBoard().tryHitShip(x, (char) y) == 2) {
                 inAttack = true;
-                lastAttacked.x = x;
-                lastAttacked.y = (char) y;
+                lastAttacked= new Coordinate(x, (char)(y));
+                firstAttacked = lastAttacked;
                 opponentBoard[x][y - 'A'] = 1;
+            } else {
+                opponentBoard[x][y - 'A'] = 3;
             }
 
         } else {
+            System.out.println(2);
             if (position == 0) {
                 Coordinate[] check = {
                         new Coordinate(lastAttacked.x, (char) (lastAttacked.y + 1)),
@@ -115,39 +152,49 @@ public class AIThread extends Thread {
                 };
 
                 for (Coordinate coordinate : check) {
-                    if (isValidCoordinate(coordinate.x, coordinate.y) && opponentBoard[coordinate.x][coordinate.y - 'A'] != 1 && checkAround(coordinate)) {
+                    if (isValidCoordinate(coordinate.x, coordinate.y) && opponentBoard[coordinate.x][coordinate.y - 'A'] != 1 && opponentBoard[coordinate.x][coordinate.y - 'A'] != 3  && checkAround(coordinate)) {
                         handleAttack(coordinate);
+                        System.out.println(coordinate);
                         break;
                     }
                 }
             } else {
-                if (position == 1) {
+                System.out.println(3);
+                if (position == 2) {
                     Coordinate[] coordinates = {
                             new Coordinate(lastAttacked.x, (char) (lastAttacked.y + 1)),
-                            new Coordinate(lastAttacked.x, (char) (lastAttacked.y - 1))
+                            new Coordinate(lastAttacked.x, (char) (lastAttacked.y - 1)),
+                            new Coordinate(lastAttacked.x, (char) (firstAttacked.y + 1)),
+                            new Coordinate(lastAttacked.x, (char) (firstAttacked.y - 1))
                     };
 
                     for (Coordinate c : coordinates) {
-                        if (isValidCoordinate(c.x, c.y) && opponentBoard[c.x][c.y - 'A'] != 1 && checkAround(c)) {
+                        if (isValidCoordinate(c.x, c.y) && opponentBoard[c.x][c.y - 'A'] != 1 && opponentBoard[c.x][c.y - 'A'] != 3 && checkAround(c)) {
                             handleAttack(c);
+                            System.out.println(c);
                             break;
                         }
                     }
+
                 } else {
                     Coordinate[] coordinates = {
                             new Coordinate(lastAttacked.x + 1, lastAttacked.y),
-                            new Coordinate(lastAttacked.x - 1, lastAttacked.y)
+                            new Coordinate(lastAttacked.x - 1, lastAttacked.y),
+                            new Coordinate(firstAttacked.x + 1, lastAttacked.y),
+                            new Coordinate(firstAttacked.x - 1, lastAttacked.y)
                     };
 
                     for (Coordinate c : coordinates) {
-                        if (isValidCoordinate(c.x, c.y) && opponentBoard[c.x][c.y - 'A'] != 1 && checkAround(c)) {
+                        if (isValidCoordinate(c.x, c.y) && opponentBoard[c.x][c.y - 'A'] != 1 && opponentBoard[c.x][c.y - 'A'] != 3 && checkAround(c)) {
                             handleAttack(c);
+                            System.out.println(c);
                             break;
                         }
                     }
                 }
             }
         }
+        game.toggleTurn();
     }
 
     boolean checkAround(Coordinate coordinate){
@@ -159,7 +206,7 @@ public class AIThread extends Thread {
         };
 
         for( Coordinate c : coordinates ){
-            if( c != coordinate && isValidCoordinate(c.x, c.y) && opponentBoard[c.x][c.y - 'A'] == 1)
+            if( c.x != lastAttacked.x && c.y != lastAttacked.y && isValidCoordinate(c.x, c.y) && opponentBoard[c.x][c.y - 'A'] == 1)
                 return false;
         }
         return true;
@@ -194,16 +241,36 @@ public class AIThread extends Thread {
                 }
                 lastAttacked = coordinate;
                 placeAround(coordinate);
+                game.getPlayer1().out.println("The opponent attacked your ship: ");
+                printBoard(game.getPlayer1().out, game.getPlayer1().getBoard().getBoard());
                 break;
             case 1:
+                if( game.getPlayer1().getBoard().areAllShipsSunk() ){
+                    game.isOver = true;
+                    game.getPlayer1().out.println("The game is over! You lost.");
+                } else {
+                    game.getPlayer1().out.println("The opponent drawn one of your ships: ");
+                    printBoard(game.getPlayer1().out, game.getPlayer1().getBoard().getBoard());
+                }
                 inAttack = false;
                 position = 0;
                 placeAround(coordinate);
                 break;
             case 0:
-                opponentBoard[coordinate.x][coordinate.y - 'A'] = 0;
+                game.getPlayer1().out.println("The opponent missed your ships!");
+                opponentBoard[coordinate.x][coordinate.y - 'A'] = 3;
+        }
+
+
+    }
+
+    private void printBoard(PrintWriter out, char[][] board) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                out.print(board[i][j] + " ");
+            }
+            out.println();
         }
     }
 
 }
-

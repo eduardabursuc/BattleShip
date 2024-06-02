@@ -161,9 +161,8 @@ public class GameServer {
 
     private static void startGameWithAI(Socket playerSocket, Player player) {
         Game game = new Game();
-        game.withAI = true;
+        game.setWithAI(true);
         new ClientThread(playerSocket, game, true).start();
-        new AIThread(game).start();
         System.out.println("Game started between player and AI.");
     }
 

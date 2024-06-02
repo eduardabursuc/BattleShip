@@ -136,6 +136,8 @@ public class Board implements Serializable {
             }
             return 2;
         } else {
+            if( grid[x][y - 'A' + 1] == 'X')
+                return -1;
             return 0;
         }
     }

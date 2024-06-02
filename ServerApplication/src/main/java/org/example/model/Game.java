@@ -7,10 +7,10 @@ import java.io.Serializable;
 public class Game implements Serializable {
     private Player player1;
     private Player player2;
-    private AIThread AI;
+    private AIThread AI = new AIThread(this);
 
     private Player winner;
-    private boolean isPlayer1Turn;
+    private boolean isPlayer1Turn = true;
 
     public boolean isOver = false;
     public boolean withAI = false;
@@ -21,7 +21,6 @@ public class Game implements Serializable {
 
     public synchronized void setPlayer2(Player player) {
         this.player2 = player;
-        this.isPlayer1Turn = true;
     }
 
     public synchronized void notifyPlayers() {
@@ -42,6 +41,12 @@ public class Game implements Serializable {
 
     public void toggleTurn() {
         isPlayer1Turn = !isPlayer1Turn;
+        if (isPlayer1Turn) {
+            player1.out.println("Your turn");
+        } else {
+            player2.out.println("Your turn");
+        }
+
     }
 
     public Player getWinner() {
@@ -60,5 +65,9 @@ public class Game implements Serializable {
         }
     }
 
+    public void setWithAI(boolean ai){
+        withAI = ai;
+        AI.start();
+    }
     // Add methods for game logic, such as placing ships, making moves, checking win conditions, etc.
 }
