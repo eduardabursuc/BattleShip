@@ -1,6 +1,7 @@
 package org.example.model;
 
 import org.example.AIThread;
+import org.example.TimerThread;
 
 import java.io.Serializable;
 
@@ -8,6 +9,7 @@ public class Game implements Serializable {
     private Player player1;
     private Player player2;
     private AIThread AI = new AIThread(this);
+    public TimerThread timer = new TimerThread(this);
 
     private Player winner;
     private boolean isPlayer1Turn = true;
@@ -41,6 +43,7 @@ public class Game implements Serializable {
 
     public void toggleTurn() {
         isPlayer1Turn = !isPlayer1Turn;
+        timer.resetTimer();
         if (isPlayer1Turn) {
             player1.out.println("Your turn");
         } else {

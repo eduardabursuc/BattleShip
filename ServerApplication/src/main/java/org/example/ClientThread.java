@@ -3,6 +3,7 @@ package org.example;
 import org.example.model.Board;
 import org.example.model.Game;
 import org.example.model.Player;
+import org.example.repository.PlayerRepository;
 
 import java.io.*;
 import java.net.*;
@@ -16,15 +17,14 @@ public class ClientThread extends Thread {
     private boolean isPlayer1;
     private PrintWriter out;
     private BufferedReader in;
-    //private TimerThread timer;
 
     public ClientThread(Socket socket, Game game, boolean isPlayer1) {
         this.socket = socket;
         this.game = game;
         this.isPlayer1 = isPlayer1;
-        //this.timer = new TimerThread(game);
     }
 
+    @Override
     public void run() {
         try {
             out = new PrintWriter(socket.getOutputStream(), true);
@@ -38,20 +38,17 @@ public class ClientThread extends Thread {
 
             out.println("Create your board: ");
             if (isPlayer1) {
-                game.setPlayer1(player);
                 printBoard(out, game.getPlayer1().getBoard().getBoard());
                 if( game.withAI ){
+                    game.setPlayer1(player);
                     Player player2 = new Player();
                     player2.setOut(new PrintWriter(System.out));
                     game.setPlayer2(player2);
                 }
             } else {
-                    game.setPlayer2(player);
                     printBoard(out, game.getPlayer2().getBoard().getBoard());
             }
 
-
-            //timer.startTimer();
 
             String request;
             while ((request = in.readLine()) != null) {
@@ -132,26 +129,26 @@ public class ClientThread extends Thread {
         switch (hit) {
             case -1:
                 out.println("Already attacked ..");
-                opponent.out.println("The opponent missed your ships!");
                 break;
             case 0:
                 out.println("Oops ... missed the target");
-                opponent.out.println("The opponent missed your ships!");
                 break;
             case 1:
                 out.println("The ship sank!");
                 if (opponent.getBoard().areAllShipsSunk()) {
+                    PlayerRepository pr = new PlayerRepository();
+                    pr.updateWins(currentPlayer.getUsername());
                     out.println("Congratulations! You have sunk all opponent's ships. You win!");
                     opponent.out.println("The game is over! You lost.");
                     game.isOver = true;
                     game.setWinner(currentPlayer);
                 }
-                opponent.out.println("The opponent drawn one of your ships: ");
+                opponent.out.println("The opponent attacked your ships");
                 printBoard(opponent.out, opponent.getBoard().getBoard());
                 break;
             case 2:
                 out.println("You attacked a ship!");
-                opponent.out.println("The opponent attacked your ship: ");
+                opponent.out.println("The opponent attacked your ships");
                 printBoard(opponent.out, opponent.getBoard().getBoard());
                 break;
         }
@@ -205,6 +202,7 @@ public class ClientThread extends Thread {
                 game.getPlayer1().setStartTime(System.currentTimeMillis());
                 game.getPlayer2().setStartTime(System.currentTimeMillis());
                 game.getPlayer1().out.println("Your turn:");
+                game.timer.start();
             }
         } else {
             out.println("Incorrect syntax for setting a ship.");

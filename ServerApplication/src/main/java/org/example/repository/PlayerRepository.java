@@ -87,5 +87,16 @@ public class PlayerRepository extends AbstractRepository<Player, String> {
         }
     }
 
+    public List<Player> getTopPlayersByWins() {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            TypedQuery<Player> query = entityManager.createQuery("SELECT p FROM Player p ORDER BY p.wins DESC", Player.class);
+            query.setMaxResults(10);
+            return query.getResultList();
+        } finally {
+            entityManager.close();
+        }
+    }
+
 
 }

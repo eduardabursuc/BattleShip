@@ -5,13 +5,14 @@ import org.example.model.Player;
 import org.example.repository.PlayerRepository;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
 
 public class GameServer {
     private int port;
-    private static Map<String, LinkedBlockingQueue<Socket>> games = new ConcurrentHashMap<>();
+    private static Map<String, ConcurrentHashMap<Socket, String>> games = new ConcurrentHashMap<>();
     private PlayerRepository playerRepository;
 
     public GameServer(int port) {
@@ -56,17 +57,17 @@ public class GameServer {
                     break;
                 } else if (request.equals("create game")) {
                     String gameId = generateGameId();
-                    games.put(gameId, new LinkedBlockingQueue<>(2));
-                    games.get(gameId).offer(clientSocket);
+                    games.put(gameId, new ConcurrentHashMap<>(2));
+                    games.get(gameId).put(clientSocket, player.getUsername());
                     out.println("Game created with ID: " + gameId);
                     out.println("Waiting for second player to join...");
                     break;
                 } else if (request.startsWith("join game ")) {
                     String gameId = request.substring(10).trim();
                     if (games.containsKey(gameId)) {
-                        LinkedBlockingQueue<Socket> queue = games.get(gameId);
+                        ConcurrentHashMap<Socket, String> queue = games.get(gameId);
                         if (queue.size() < 2) {
-                            queue.offer(clientSocket);
+                            queue.put(clientSocket, player.getUsername());
                             out.println("Joined game with ID: " + gameId);
                             if (queue.size() == 2) {
                                 startGame(gameId);
@@ -83,8 +84,7 @@ public class GameServer {
                     startGameWithAI(clientSocket, player);
                     break;
                 }  else if (request.equals("rating")) {
-                    out.println("rating");
-                    break;
+                    out.println(formatRating());
                 } else {
                     out.println("Invalid command. Try 'create game', 'join game <id>', 'play with AI', or 'rating'.");
                 }
@@ -146,14 +146,30 @@ public class GameServer {
 
     private static void startGame(String id) {
         try {
-            LinkedBlockingQueue<Socket> queue = games.get(id);
-            Socket player1Socket = queue.take();
-            Socket player2Socket = queue.take();
+            ConcurrentHashMap<Socket, String> queue = games.get(id);
+
+            Iterator<Map.Entry<Socket, String>> iterator = queue.entrySet().iterator();
+
             Game game = new Game();
-            new ClientThread(player1Socket, game, true).start();
-            new ClientThread(player2Socket, game, false).start();
-            System.out.println("Game started between " + player1Socket.getInetAddress().toString() + " and " + player2Socket.getInetAddress().toString());
-        } catch (InterruptedException e) {
+
+            if (iterator.hasNext()) {
+                Map.Entry<Socket, String> firstEntry = iterator.next();
+                PrintWriter out = new PrintWriter(firstEntry.getKey().getOutputStream(), true);
+                Player player1 = new Player(firstEntry.getValue(), out);
+                new ClientThread(firstEntry.getKey(), game, true).start();
+                game.setPlayer1(player1);
+            }
+
+            if (iterator.hasNext()) {
+                Map.Entry<Socket, String> secondEntry = iterator.next();
+                PrintWriter out = new PrintWriter(secondEntry.getKey().getOutputStream(), true);
+                Player player2 = new Player(secondEntry.getValue(), out);
+                new ClientThread(secondEntry.getKey(), game, false).start();
+                game.setPlayer2(player2);
+            }
+
+            System.out.println("Game started between " + game.getPlayer1().getUsername() + " and " + game.getPlayer2().getUsername());
+        } catch (Exception e) {
             System.err.println("InterruptedException: " + e.getMessage());
             e.printStackTrace();
         }
@@ -165,6 +181,26 @@ public class GameServer {
         new ClientThread(playerSocket, game, true).start();
         System.out.println("Game started between player and AI.");
     }
+
+    public StringBuilder formatRating() {
+        List<Player> players = playerRepository.getTopPlayersByWins();
+
+        // Find the maximum length of username
+        int maxUsernameLength = players.stream().mapToInt(player -> player.getUsername().length()).max().orElse(0);
+        maxUsernameLength = Math.max(maxUsernameLength, "USERNAME".length());
+
+        StringBuilder rating = new StringBuilder();
+        rating.append(String.format("%-4s%-" + (maxUsernameLength + 2) + "s%-5s%n", "No.", "USERNAME", "WINS"));
+
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
+            rating.append(String.format("%-4d%-" + (maxUsernameLength + 2) + "s%-5d%n", i + 1, player.getUsername(), player.getWins()));
+        }
+
+        return rating;
+    }
+
+
 
     public static void main(String[] args) {
         int port = 9999;

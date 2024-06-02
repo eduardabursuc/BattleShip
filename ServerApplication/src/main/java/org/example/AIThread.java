@@ -241,7 +241,7 @@ public class AIThread extends Thread {
                 }
                 lastAttacked = coordinate;
                 placeAround(coordinate);
-                game.getPlayer1().out.println("The opponent attacked your ship: ");
+                game.getPlayer1().out.println("The opponent attacked your ships");
                 printBoard(game.getPlayer1().out, game.getPlayer1().getBoard().getBoard());
                 break;
             case 1:
@@ -249,7 +249,7 @@ public class AIThread extends Thread {
                     game.isOver = true;
                     game.getPlayer1().out.println("The game is over! You lost.");
                 } else {
-                    game.getPlayer1().out.println("The opponent drawn one of your ships: ");
+                    game.getPlayer1().out.println("The opponent attacked your ships");
                     printBoard(game.getPlayer1().out, game.getPlayer1().getBoard().getBoard());
                 }
                 inAttack = false;
@@ -257,7 +257,6 @@ public class AIThread extends Thread {
                 placeAround(coordinate);
                 break;
             case 0:
-                game.getPlayer1().out.println("The opponent missed your ships!");
                 opponentBoard[coordinate.x][coordinate.y - 'A'] = 3;
         }
 

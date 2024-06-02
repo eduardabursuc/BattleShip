@@ -2,48 +2,36 @@ package org.example;
 
 import org.example.model.Game;
 
+import java.awt.desktop.SystemSleepEvent;
 import java.util.concurrent.*;
 
-public class TimerThread {
-    private ScheduledExecutorService scheduler;
-    private long interval = 15000;
+public class TimerThread extends Thread{
+
     private long stopTime;
     Game game;
 
     public TimerThread(Game game) {
-        this.scheduler = Executors.newSingleThreadScheduledExecutor();
         this.game = game;
     }
 
-    public synchronized void startTimer() {
-        stopTime = System.currentTimeMillis() + interval;
-        scheduler.scheduleAtFixedRate(() -> {
-            if (System.currentTimeMillis() >= stopTime) {
-                if(game.isPlayer1Turn()){
-                    game.setWinner(game.getPlayer2());
-                } else {
-                    game.setWinner(game.getPlayer1());
-                }
-
-                game.getPlayer1().out.println("The game is over. " + (game.getWinner() == game.getPlayer1() ? "You won!" : "You lost."));
-                game.getPlayer2().out.println("The game is over. " + (game.getWinner() == game.getPlayer2() ? "You won!" : "You lost."));
-                notifyPlayers();
+    @Override
+    public void run(){
+        stopTime = System.currentTimeMillis() + 15000;
+        while( System.currentTimeMillis() < stopTime ){
+            try{
+                sleep(1000);
+            } catch(Exception e){
+                e.printStackTrace();
             }
-        }, 0, interval, TimeUnit.MILLISECONDS);
+        }
+        game.isOver = true;
+        game.getPlayer1().out.println("Time is up!");
+        game.getPlayer2().out.println("Time is up!");
     }
 
-    public synchronized void stopTimer() {
-        scheduler.shutdown();
+
+    public void resetTimer(){
+        this.stopTime = System.currentTimeMillis() + 15000;
     }
 
-    public synchronized void restartTimer() {
-        stopTimer();
-        scheduler = Executors.newSingleThreadScheduledExecutor();
-        startTimer();
-    }
-
-    public synchronized void notifyPlayers() {
-        // Notify players here
-        System.out.println("Timer expired without any action taken.");
-    }
 }

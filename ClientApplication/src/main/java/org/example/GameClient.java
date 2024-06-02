@@ -157,6 +157,9 @@ public class GameClient {
                         gui.updateMatrixWithAttack(cell, false);
                         SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, "Oops ... missed the target.", "MISS", JOptionPane.INFORMATION_MESSAGE));
                     }
+                    if(response.startsWith("Already attacked")) {
+                        continue;
+                    }
                     if(response.startsWith("The ship sank")) {
                         String cell = gui.getAttackTextField().getText();
                         gui.updateMatrixWithAttack(cell, true);
@@ -276,7 +279,7 @@ public class GameClient {
                         SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, finalResponse, "Login Successful", JOptionPane.INFORMATION_MESSAGE));
                         gui.switchToGameButtons();
                     }
-                    if(response.startsWith("rating")) {
+                    if(response.startsWith("No.")) {
                         String finalResponse = response;
                         SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, finalResponse, "Rating", JOptionPane.INFORMATION_MESSAGE));
                     }
