@@ -42,7 +42,7 @@ public class ClientThread extends Thread {
             }
 
 
-            long timeLimit = 15000; // 50 seconds time limit for each turn
+            long timeLimit = 15000; // 15 seconds time limit for each turn
 
             String request;
             while ((request = in.readLine()) != null) {
@@ -101,6 +101,7 @@ public class ClientThread extends Thread {
         long elapsedTime = System.currentTimeMillis() - startTime;
         if (elapsedTime > timeLimit) {
             out.println("Time's up!");
+            opponent.out.println("Congratulations! You won by time limit.");
             game.isOver = true;
             game.setWinner(opponent);
             return false;
@@ -139,6 +140,7 @@ public class ClientThread extends Thread {
                 out.println("The ship sank!");
                 if (opponent.getBoard().areAllShipsSunk()) {
                     out.println("Congratulations! You have sunk all opponent's ships. You win!");
+                    opponent.out.println("The game is over! You lost.");
                     game.isOver = true;
                     game.setWinner(currentPlayer);
                 }

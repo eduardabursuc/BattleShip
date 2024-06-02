@@ -30,19 +30,17 @@ public class GameClient {
             Thread responseThread = new Thread(new ServerResponseHandler(socket, running));
             responseThread.start();
 
-            // Start the GUI
             SwingUtilities.invokeLater(() -> {
                 gui = new GameClientGUI(this);
                 gui.setVisible(true);
             });
 
-            // Keep the main thread alive until running is set to false
+
             while (running.get()) {
                 Thread.sleep(1000);
             }
 
-            // Clean up resources
-            responseThread.join(); // Wait for the response handler to finish
+            responseThread.join();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         } finally {
@@ -119,8 +117,10 @@ public class GameClient {
                     }
                     if(response.startsWith("Your turn")) {
                         SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, "It's your turn!", "Your Turn", JOptionPane.INFORMATION_MESSAGE));
+                        gui.getTimerLabel().setText("Time left: 15");
+                        gui.startTimer();
                     }
-                    if(response.startsWith("The game is over.")) {
+                    if(response.startsWith("The game is over!")) {
                         SwingUtilities.invokeLater(() -> {
                             JFrame frame = new JFrame();
                             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -165,6 +165,63 @@ public class GameClient {
                                     frame,
                                     "You won!",
                                     "Game Over",
+                                    JOptionPane.DEFAULT_OPTION,
+                                    JOptionPane.INFORMATION_MESSAGE,
+                                    null,
+                                    new Object[]{"OK"},
+                                    "OK"
+                            );
+                            if (result == JOptionPane.OK_OPTION) {
+                                System.exit(0);
+                            }
+                        });
+                    }
+                    if(response.contains("You won")) {
+                        SwingUtilities.invokeLater(() -> {
+                            JFrame frame = new JFrame();
+                            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            int result = JOptionPane.showOptionDialog(
+                                    frame,
+                                    "You won!",
+                                    "Game Over",
+                                    JOptionPane.DEFAULT_OPTION,
+                                    JOptionPane.INFORMATION_MESSAGE,
+                                    null,
+                                    new Object[]{"OK"},
+                                    "OK"
+                            );
+                            if (result == JOptionPane.OK_OPTION) {
+                                System.exit(0);
+                            }
+                        });
+                    }
+                    if(response.contains("You lost")) {
+                        SwingUtilities.invokeLater(() -> {
+                            JFrame frame = new JFrame();
+                            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            int result = JOptionPane.showOptionDialog(
+                                    frame,
+                                    "You lost!",
+                                    "LOSE",
+                                    JOptionPane.DEFAULT_OPTION,
+                                    JOptionPane.INFORMATION_MESSAGE,
+                                    null,
+                                    new Object[]{"OK"},
+                                    "OK"
+                            );
+                            if (result == JOptionPane.OK_OPTION) {
+                                System.exit(0);
+                            }
+                        });
+                    }
+                    if(response.startsWith("Time's up")) {
+                        SwingUtilities.invokeLater(() -> {
+                            JFrame frame = new JFrame();
+                            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            int result = JOptionPane.showOptionDialog(
+                                    frame,
+                                    "Time limit exceeded! hurry up grandma",
+                                    "LOSE",
                                     JOptionPane.DEFAULT_OPTION,
                                     JOptionPane.INFORMATION_MESSAGE,
                                     null,
