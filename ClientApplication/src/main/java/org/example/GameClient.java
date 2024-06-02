@@ -276,6 +276,10 @@ public class GameClient {
                         SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, finalResponse, "Login Successful", JOptionPane.INFORMATION_MESSAGE));
                         gui.switchToGameButtons();
                     }
+                    if(response.startsWith("rating")) {
+                        String finalResponse = response;
+                        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, finalResponse, "Rating", JOptionPane.INFORMATION_MESSAGE));
+                    }
                 }
             } catch (IOException e) {
                 if (running.get()) {
