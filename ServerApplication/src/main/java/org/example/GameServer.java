@@ -182,7 +182,7 @@ public class GameServer {
         System.out.println("Game started between player and AI.");
     }
 
-    public StringBuilder formatRating() {
+    public String formatRating() {
         List<Player> players = playerRepository.getTopPlayersByWins();
 
         // Find the maximum length of username
@@ -192,13 +192,19 @@ public class GameServer {
         StringBuilder rating = new StringBuilder();
         rating.append(String.format("%-4s%-" + (maxUsernameLength + 2) + "s%-5s%n", "No.", "USERNAME", "WINS"));
 
-        for (int i = 0; i < players.size(); i++) {
-            Player player = players.get(i);
-            rating.append(String.format("%-4d%-" + (maxUsernameLength + 2) + "s%-5d%n", i + 1, player.getUsername(), player.getWins()));
+        for (int i = 0; i < 10; i++) {
+            if (i < players.size()) {
+                Player player = players.get(i);
+                rating.append(String.format("%-4d%-" + (maxUsernameLength + 2) + "s%-5d%n", i + 1, player.getUsername(), player.getWins()));
+            } else {
+                rating.append(String.format("%-4d%-" + (maxUsernameLength + 2) + "s%-5s%n", i + 1, "N/A", "N/A"));
+            }
         }
 
-        return rating;
+        return rating.toString();
     }
+
+
 
 
 

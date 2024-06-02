@@ -1,6 +1,7 @@
 package org.example;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -279,10 +280,27 @@ public class GameClient {
                         SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, finalResponse, "Login Successful", JOptionPane.INFORMATION_MESSAGE));
                         gui.switchToGameButtons();
                     }
-                    if(response.startsWith("No.")) {
-                        String finalResponse = response;
-                        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, finalResponse, "Rating", JOptionPane.INFORMATION_MESSAGE));
+                    if (response.startsWith("No.")) {
+                        String[] top = new String[11];
+                        top[0] = response;
+                        for (int i = 1; i <= 10; i++) {
+                            top[i] = serverReader.readLine();
+                        }
+                        StringBuilder finalResponse = new StringBuilder();
+                        for (String line : top) {
+                            finalResponse.append(line).append("\n");
+                        }
+                        String finalResponseString = finalResponse.toString();
+
+                        // Use a monospaced font for the message
+                        JTextArea textArea = new JTextArea(finalResponseString);
+                        textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+                        textArea.setEditable(false);
+
+                        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, new JScrollPane(textArea), "Rating", JOptionPane.INFORMATION_MESSAGE));
                     }
+
+
                 }
             } catch (IOException e) {
                 if (running.get()) {

@@ -44,11 +44,12 @@ public class Game implements Serializable {
     public void toggleTurn() {
         isPlayer1Turn = !isPlayer1Turn;
         timer.resetTimer();
-        if (isPlayer1Turn) {
-            player1.out.println("Your turn");
-        } else {
-            player2.out.println("Your turn");
-        }
+        if(!withAI)
+            if (isPlayer1Turn) {
+                player1.out.println("Your turn");
+            } else {
+                player2.out.println("Your turn");
+            }
 
     }
 
@@ -72,5 +73,7 @@ public class Game implements Serializable {
         withAI = ai;
         AI.start();
     }
-    // Add methods for game logic, such as placing ships, making moves, checking win conditions, etc.
+
+
+
 }

@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a76256e4-29c6-4b63-be3d-43f0e451f858" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/src/main/java/org/example/TimerThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BattleShip/ClientApplication/src/main/java/org/example/GameClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BattleShip/ClientApplication/src/main/java/org/example/GameClient.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

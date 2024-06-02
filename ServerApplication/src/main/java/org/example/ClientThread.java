@@ -38,13 +38,14 @@ public class ClientThread extends Thread {
 
             out.println("Create your board: ");
             if (isPlayer1) {
-                printBoard(out, game.getPlayer1().getBoard().getBoard());
                 if( game.withAI ){
                     game.setPlayer1(player);
                     Player player2 = new Player();
                     player2.setOut(new PrintWriter(System.out));
                     game.setPlayer2(player2);
                 }
+                printBoard(out, game.getPlayer1().getBoard().getBoard());
+
             } else {
                     printBoard(out, game.getPlayer2().getBoard().getBoard());
             }

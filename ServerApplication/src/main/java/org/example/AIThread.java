@@ -133,6 +133,8 @@ public class AIThread extends Thread {
             System.out.println(new Coordinate(x, (char)(y)));
 
             if (game.getPlayer1().getBoard().tryHitShip(x, (char) y) == 2) {
+                game.getPlayer1().out.println("The opponent attacked your ships");
+                printBoard(game.getPlayer1().out, game.getPlayer1().getBoard().getBoard());
                 inAttack = true;
                 lastAttacked= new Coordinate(x, (char)(y));
                 firstAttacked = lastAttacked;
