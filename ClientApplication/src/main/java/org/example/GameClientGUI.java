@@ -53,14 +53,48 @@ public class GameClientGUI extends JFrame {
         }
     }
 
+//    private void initUI() {
+//        setTitle("Game Client");
+//        setSize(300, 250);
+//        setDefaultCloseOperation(EXIT_ON_CLOSE);
+//        setLocationRelativeTo(null);
+//
+//        JPanel panel = new JPanel();
+//        panel.setLayout(new GridLayout(2, 1));
+//
+//        JButton createGameButton = new JButton("Create Game");
+//        createGameButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                client.sendMessage("create game");
+//            }
+//        });
+//
+//        JButton joinGameButton = new JButton("Join Game");
+//        joinGameButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                String gameId = JOptionPane.showInputDialog(GameClientGUI.this, "Enter game code:");
+//                if (gameId != null && !gameId.trim().isEmpty()) {
+//                    client.sendMessage("join game " + gameId.trim());
+//                }
+//            }
+//        });
+//
+//        panel.add(createGameButton);
+//        panel.add(joinGameButton);
+//
+//        add(panel);
+//    }
+
     private void initUI() {
         setTitle("Game Client");
-        setSize(300, 150);
+        setSize(300, 250); // Increase the height to fit the new buttons
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(2, 1));
+        panel.setLayout(new GridLayout(4, 1)); // Change to 4 rows
 
         JButton createGameButton = new JButton("Create Game");
         createGameButton.addActionListener(new ActionListener() {
@@ -81,8 +115,58 @@ public class GameClientGUI extends JFrame {
             }
         });
 
+        JButton registerButton = new JButton("Register");
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JTextField usernameField = new JTextField();
+                JTextField passwordField = new JPasswordField();
+                Object[] message = {
+                        "Username:", usernameField,
+                        "Password:", passwordField
+                };
+
+                int option = JOptionPane.showConfirmDialog(null, message, "Register", JOptionPane.OK_CANCEL_OPTION);
+                if (option == JOptionPane.OK_OPTION) {
+                    String username = usernameField.getText();
+                    String password = passwordField.getText();
+                    if (!username.isEmpty() && !password.isEmpty()) {
+                        client.sendMessage("register " + username + " " + password);
+                    } else {
+                        JOptionPane.showMessageDialog(GameClientGUI.this, "Username and password cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+
+        JButton loginButton = new JButton("Login");
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JTextField usernameField = new JTextField();
+                JTextField passwordField = new JPasswordField();
+                Object[] message = {
+                        "Username:", usernameField,
+                        "Password:", passwordField
+                };
+
+                int option = JOptionPane.showConfirmDialog(null, message, "Login", JOptionPane.OK_CANCEL_OPTION);
+                if (option == JOptionPane.OK_OPTION) {
+                    String username = usernameField.getText();
+                    String password = passwordField.getText();
+                    if (!username.isEmpty() && !password.isEmpty()) {
+                        client.sendMessage("login " + username + " " + password);
+                    } else {
+                        JOptionPane.showMessageDialog(GameClientGUI.this, "Username and password cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+
         panel.add(createGameButton);
         panel.add(joinGameButton);
+        panel.add(registerButton);
+        panel.add(loginButton);
 
         add(panel);
     }

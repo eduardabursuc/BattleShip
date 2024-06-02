@@ -245,9 +245,30 @@ public class GameClient {
                             opponentAttacked = false;
                         }
                     }
+                    if(response.contains("Failed to place ship.")) {
+                        String responseH = "Invalid ship placement.\nRemember that the ship must be placed horizontally or vertically.\nYou have 5 ships in total:\n1 of length 5, 1 of length 4,\n2 of length 3 and 1 of length 2.";
+                        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, responseH, "Invalid ship placement", JOptionPane.ERROR_MESSAGE));
+                    }
                     if (response.startsWith("The opponent attacked your ships")) {
                         opponentAttacked = true;
                     }
+                    if (response.startsWith("Registration successful. You can now login.")) {
+                        String finalResponse = response;
+                        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, finalResponse, "Registration Successful", JOptionPane.INFORMATION_MESSAGE));
+                    }
+                    if (response.startsWith("Invalid command")) {
+                        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, "Please Login, or Register and then Login to play.", "Login or Register first.", JOptionPane.INFORMATION_MESSAGE));
+                    }
+                    if (response.contains("Try again with a different username.")) {
+                        String finalResponse = response;
+                        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, finalResponse, "Registration Failed", JOptionPane.ERROR_MESSAGE));
+                    }
+                    if(response.startsWith("Login failed.")) {
+                        String finalResponse = response;
+                        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, finalResponse, "Login Failed", JOptionPane.ERROR_MESSAGE));
+                    }
+//                    if(response.startsWith("Login successful.")) {
+//                    }
                 }
             } catch (IOException e) {
                 if (running.get()) {
