@@ -1,5 +1,7 @@
 package org.example;
 
+import org.w3c.dom.html.HTMLIsIndexElement;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -82,13 +84,22 @@ public class GameClientGUI extends JFrame {
 
         JFrame canvasFrame = new JFrame("Game");
         canvasFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        canvasFrame.setSize(380, 500);
+        canvasFrame.setSize(420, 500);
         canvasFrame.setLocationRelativeTo(null);
+
         drawingPanel = new CustomDrawingPanel();
         canvasFrame.add(drawingPanel, BorderLayout.CENTER);
 
         southPanel = new JPanel();
         canvasFrame.add(southPanel, BorderLayout.SOUTH);
+
+        // Create and add the right panel
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BorderLayout());
+        timerLabel = new JLabel("Time left: 15");
+        timerLabel.setHorizontalAlignment(JLabel.CENTER);
+        rightPanel.add(timerLabel, BorderLayout.CENTER);
+        canvasFrame.add(rightPanel, BorderLayout.EAST);
 
         canvasFrame.setVisible(true);
 
@@ -114,6 +125,58 @@ public class GameClientGUI extends JFrame {
 //                }
             }
         });
+    }
+    private JLabel timerLabel;
+
+    public JLabel getTimerLabel() {
+        return timerLabel;
+    }
+
+    private Timer timer;
+    private int timeLeft = 15;
+
+    public void startTimer() {
+        timeLeft = 15;
+        timerLabel.setText("Time left: " + timeLeft);
+        if (timer != null) {
+            timer.stop();
+        }
+        timer = new Timer(1000, e -> {
+            if (timeLeft > 0) {
+                timeLeft--;
+                timerLabel.setText("Time left: " + timeLeft);
+            } else {
+                ((Timer) e.getSource()).stop();
+                SwingUtilities.invokeLater(() -> {
+                    JFrame frame = new JFrame();
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    int result = JOptionPane.showOptionDialog(
+                            frame,
+                            "Time's up!",
+                            "Time Up",
+                            JOptionPane.DEFAULT_OPTION,
+                            JOptionPane.INFORMATION_MESSAGE,
+                            null,
+                            new Object[]{"OK"},
+                            "OK"
+                    );
+                    if (result == JOptionPane.OK_OPTION) {
+                        client.sendMessage("timeup");
+                        System.exit(0);
+                    } else {
+                        client.sendMessage("timeup");
+                        System.exit(0);
+                    }
+                });
+            }
+        });
+        timer.start();
+    }
+
+    private void pauseTimer() {
+        if (timer != null) {
+            timer.stop();
+        }
     }
 
     public void resetBoard() {
@@ -216,6 +279,7 @@ public class GameClientGUI extends JFrame {
                         JOptionPane.showMessageDialog(GameClientGUI.this, "Attack coordinate cannot be empty.", "Invalid move", JOptionPane.ERROR_MESSAGE);
                     } else {
                         client.sendSubmitMoveMessage(attackCoordinate);
+                        pauseTimer();
                     }
                 }
             });
