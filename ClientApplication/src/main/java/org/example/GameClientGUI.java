@@ -1,12 +1,11 @@
 package org.example;
 
-import org.w3c.dom.html.HTMLIsIndexElement;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public class GameClientGUI extends JFrame {
+    SecondCustomDrawingPanel secondDrawingPanel;
     private GameClient client;
     private static final int CELL_SIZE = 30;
     CustomDrawingPanel drawingPanel;
@@ -26,6 +25,7 @@ public class GameClientGUI extends JFrame {
     public GameClientGUI(GameClient client) {
         this.client = client;
         initMatrix();
+        initCopy();
         initUI();
     }
 
@@ -41,6 +41,14 @@ public class GameClientGUI extends JFrame {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 matrix[i][j] = 'X';
+            }
+        }
+    }
+
+    private void initCopy() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                matrixCopy[i][j] = 'Z';
             }
         }
     }
@@ -79,16 +87,32 @@ public class GameClientGUI extends JFrame {
         add(panel);
     }
 
+    public void updateOpponentAttack(String[] boardState) {
+        for (int i = 1; i < boardState.length; i++) {
+            String[] row = boardState[i].trim().split(" ");
+            for (int j = 1; j <= 10; j++) {
+                matrixCopy[i - 1][j - 1] = row[j].charAt(0);
+            }
+        }
+        secondDrawingPanel.repaint();
+    }
+
     public void showGameCreatedPopup(String gameCode) {
         dispose();
 
         JFrame canvasFrame = new JFrame("Game");
         canvasFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        canvasFrame.setSize(420, 500);
+        canvasFrame.setSize(850, 500);
         canvasFrame.setLocationRelativeTo(null);
 
         drawingPanel = new CustomDrawingPanel();
-        canvasFrame.add(drawingPanel, BorderLayout.CENTER);
+        secondDrawingPanel = new SecondCustomDrawingPanel();
+
+        JPanel gridsPanel = new JPanel(new GridLayout(1, 2));
+        gridsPanel.add(drawingPanel);
+        gridsPanel.add(secondDrawingPanel);
+
+        canvasFrame.add(gridsPanel, BorderLayout.CENTER);
 
         southPanel = new JPanel();
         canvasFrame.add(southPanel, BorderLayout.SOUTH);
@@ -109,23 +133,19 @@ public class GameClientGUI extends JFrame {
                 int x = e.getX();
                 int y = e.getY();
 
-                // Calculate row and column indices
                 int row = (y / CELL_SIZE) - 1;
                 int col = (x / CELL_SIZE) - 1;
 
-                // Check if the click is within the grid bounds
                 if (row >= 0 && row < rows && col >= 0 && col < cols) {
                     String cellCoordinate = (row + 1) + String.valueOf((char) ('A' + col));
                     if (selectedTextField != null) {
                         selectedTextField.setText(cellCoordinate);
                     }
                 }
-//                else {
-//                    //clicked outside the matrix
-//                }
             }
         });
     }
+
     private JLabel timerLabel;
 
     public JLabel getTimerLabel() {
@@ -180,12 +200,22 @@ public class GameClientGUI extends JFrame {
     }
 
     public void resetBoard() {
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < cols; j++){
+                matrixCopy[i][j] = 'O';
+            }
+        }
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
+                if(matrix[i][j] == 'S'){
+                    matrixCopy[i][j] = 'S';
+                }
                 matrix[i][j] = 'X';
             }
         }
         drawingPanel.repaint();
+        secondDrawingPanel.repaint();
 
         southPanel.removeAll();
         southPanel.revalidate();
@@ -375,5 +405,51 @@ public class GameClientGUI extends JFrame {
             }
         }
     }
+
+    public final char[][] matrixCopy = new char[rows][cols];
+    private class SecondCustomDrawingPanel extends JPanel {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            // col labels (a-j)
+            for (int j = 0; j < cols; j++) {
+                g.drawString(String.valueOf((char) ('A' + j)), (j + 1) * CELL_SIZE + CELL_SIZE / 2 - 5, CELL_SIZE / 2);
+            }
+
+            // row label
+            for (int i = 0; i < rows; i++) {
+                g.drawString(String.valueOf(i + 1), CELL_SIZE / 2, (i + 1) * CELL_SIZE + CELL_SIZE / 2 + 5);
+            }
+
+            // draw cells
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    if (matrixCopy[i][j] == 'Z') {
+                        g.setColor(Color.BLACK);
+                        g.fillRect((j + 1) * CELL_SIZE, (i + 1) * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                        g.setColor(Color.BLACK);
+                    }
+                    if (matrixCopy[i][j] == 'O') {
+                        g.setColor(new Color(173, 216, 230));
+                        g.fillRect((j + 1) * CELL_SIZE, (i + 1) * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                        g.setColor(Color.BLACK);
+                    }
+                    if (matrixCopy[i][j] == 'S') {
+                        g.setColor(Color.GREEN);
+                        g.fillRect((j + 1) * CELL_SIZE, (i + 1) * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                        g.setColor(Color.BLACK);
+                    }
+                    if (matrixCopy[i][j] == 'X') {
+                        g.setColor(Color.RED);
+                        g.fillRect((j + 1) * CELL_SIZE, (i + 1) * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                        g.setColor(Color.BLACK);
+                    }
+                    g.drawRect((j + 1) * CELL_SIZE, (i + 1) * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                }
+            }
+        }
+    }
+
 }
 
