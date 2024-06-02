@@ -5,7 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a76256e4-29c6-4b63-be3d-43f0e451f858" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/TimerThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/out/artifacts/ClientApplication_jar/ClientApplication.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/out/artifacts/ClientApplication_jar/ClientApplication.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/src/main/java/org/example/GameClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/src/main/java/org/example/GameClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/src/main/java/org/example/GameClientGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/src/main/java/org/example/GameClientGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClient$ServerResponseHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClient$ServerResponseHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClient.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$10.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$10.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$6.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$7.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$8.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$9.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$CustomDrawingPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$CustomDrawingPanel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$SecondCustomDrawingPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI$SecondCustomDrawingPanel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientApplication/target/classes/org/example/GameClientGUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,10 +54,20 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.GameServer.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/edwardabursuc/Desktop/ServerApplication"
+    "last_opened_file_path": "/Users/edwardabursuc/Desktop/ServerApplication",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -50,7 +78,11 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1717335153433</updated>
+      <workItem from="1717338237774" duration="521000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>
